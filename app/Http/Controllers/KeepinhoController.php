@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NotaRequest;
 use App\Models\Nota;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class KeepinhoController extends Controller
@@ -47,4 +48,8 @@ class KeepinhoController extends Controller
         $nota->delete();
         return redirect()->route('keep');
     }
+    public function lixeira() {
+        return view('keepinho.lixeira');
+    }
 }
+
