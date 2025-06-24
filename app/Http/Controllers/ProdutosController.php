@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Produto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class ProdutosController extends Controller
 {
@@ -28,7 +30,22 @@ class ProdutosController extends Controller
      */
     public function store(Request $request)
     {
-        Produto::create($request->all());
+        $request->validate([
+            'nome' => 'required',
+            'preco' => 'required|numeric',
+            'descricao' => 'required',
+            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+        $data = $request->all();
+        if ($request->hasFile('imagem')) {
+            $image = $request->file('imagem');
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            
+            // Store the image in the public disk under produtos directory
+            $path = $image->storeAs('produtos', $filename, 'public');
+            $data['imagem'] = $path;
+        }
+        Produto::create($data);
         return redirect()->route('produtos.index');
     }
 
